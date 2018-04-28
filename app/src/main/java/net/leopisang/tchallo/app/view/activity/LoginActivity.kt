@@ -22,7 +22,9 @@ import android.widget.TextView
 
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
+import android.content.DialogInterface
 import android.content.Intent
+import android.support.v7.app.AlertDialog
 
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.experimental.async
@@ -56,10 +58,23 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         })
 
         email_sign_in_button.setOnClickListener { attemptLogin() }
+        email_sign_up_button.setOnClickListener { registerScreen() }
+
+        /*loginButton = (LoginButton)findViewById(R.id.fb_login_button);
+        loginButton.setBackgroundResource(R.drawable.fb);
+        loginButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        loginButton.setCompoundDrawablePadding(0);
+        loginButton.setPadding(0, 0, 0, 0);
+        loginButton.setText("");
+        loginButton.setReadPermissions(permissionNeeds);*/
+
+        /*fb_login_button.setBackgroundResource(R.drawable.background_signup)
+        fb_login_button.text = "Connect with Facebook"*/
     }
     private fun initial() {
-        llBackgroundLogin.setBackgroundColor(resources.getColor(R.color.apps_color))
+        //llBackgroundLogin.setBackgroundColor(resources.getColor(R.color.apps_color))
         ivLoginLogo.setImageResource(R.mipmap.apps_logo)
+
     }
     private fun populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -178,6 +193,13 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
 
     private fun changeScreen(){
         var intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    //Added by Willy
+    private fun registerScreen(){
+        var intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -336,5 +358,23 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
          * TODO: remove after connecting to a real authentication system.
          */
         private val DUMMY_CREDENTIALS = arrayOf("foo@example.com:hello", "bar@example.com:world")
+    }
+
+    //Added by Willy
+    //"Do you want to exit?"
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setCancelable(false)
+        builder.setMessage("Do you want to Exit?")
+        builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
+            //if user pressed "yes", then he is allowed to exit from application
+            finish()
+        })
+        builder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, which ->
+            //if user select "No", just cancel this dialog and continue with app
+            dialog.cancel()
+        })
+        val alert = builder.create()
+        alert.show()
     }
 }
